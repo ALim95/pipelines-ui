@@ -102,9 +102,12 @@ $(document).ready(function(){
         });          
         component_num++;
     });
-    $("#generate-pipeline-button").click(function(){
-        if (curr_component_num == 0) $(".modal").addClass('is-active');          
+    $("#generate-pipeline-button").click(function(){             
         var inputs_filled = true;
+        if (curr_component_num == 0) {
+            $(".modal").addClass('is-active');
+            inputs_filled = false;
+        }
         $(".compulsory-info").each(function(){
         if (this.value == "" || this.value == "Select image") {              
             inputs_filled = false;
@@ -177,11 +180,15 @@ $(document).ready(function(){
         console.log("Directory Location:" + pipeline_directory_location);
         var dt = new Date();
         var timestamp = dt.getFullYear().toString() + (dt.getMonth()+1).toString() + dt.getDate().toString() + dt.getHours().toString() + dt.getMinutes().toString() + dt.getSeconds().toString();
-        $("#generated-timestamp").empty().append("on: " + dt);
+        $("#generated-timestamp").empty().append("on: " + dt + ` <a class="button is-info is-outlined is-small" id="copy-text-button">
+        <span class="icon">
+            <i class="far fa-clipboard"></i>
+        </span>
+        <span>Copy to clipboard</span>
+      </a>`);        
         $("#generated-pipeline").empty()
         .append(
-`<pre>
-import kfp.dsl as dsl
+`<pre><code id="code-block" class="python">import kfp.dsl as dsl
 from kubernetes import client as k8s_client
 
 pv_name='` + $("#pipeline-pv").val() + `'
@@ -238,8 +245,22 @@ if __name__ == '__main__':
     import kfp.compiler as compiler
 
     compiler.Compiler().compile(pipeline` + timestamp + `, __file__ + '.tar.gz')
+</code>
 </pre>
     `);
-        }
+    $('#copy-text-button').click(function () { copyFunction(); });
+    }
+    hljs.initHighlighting.called = false;
+    hljs.initHighlighting();
     });
 });
+
+function copyFunction() {
+    const copyText = document.getElementById("code-block").textContent;
+    const textArea = document.createElement('textarea');
+    textArea.textContent = copyText;
+    document.body.append(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    textArea.remove();
+}
