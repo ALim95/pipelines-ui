@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pipeline Generator</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/pipeline_script.js"></script>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">
+          Pipeline Generator
+        </h1>
+        <p class="subtitle">UI for <strong>Kubeflow Pipelines</strong></p>
+      </div>
+    </section>
+    <div class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="notification">
+            <h1 class="subtitle">Have at least one component in the pipeline</h1>
+          </div>
+        </div>
+      </div>
+    
+    <section class="section">
+      <div class="columns">
+        <div class="column is-one-third" id="component-column">          
+          <div class="field"><label class="label">Name of Pipeline</label><div class="control"><input id="pipeline-name" class="input compulsory-info" type="text" placeholder="Text input" /></div></div>
+          <div class="field"><label class="label">Description</label><div class="control"><input id="pipeline-description" class="input compulsory-info" type="text" placeholder="Text input" /></div></div>
+          <div class="field"><label class="label">Persistent Volume Storage</label><div class="control"><input id="pipeline-pv" class="input compulsory-info" type="text" placeholder="Text input" /></div></div>
+          <div class="field"><label class="label">Persistent Volume Claim</label><div class="control"><input id="pipeline-pvc" class="input compulsory-info" type="text" placeholder="Text input" /></div></div>
+          <div class="field"><label class="label">Name of folder to store outputs</label><div class="control"><input id="pipeline-folder" class="input compulsory-info" type="text" placeholder="Text input" /></div></div>
+          <div class="field is-grouped is-grouped-multiline">
+            <div class="control">
+              <button class="button is-primary" id="add-component-button">
+                <span class="icon">
+                  <i class="fas fa-plus"></i>
+                </span>
+                <span>Add Component</span>
+              </button>
+            </div>
+            <div class="control">
+              <button class="button is-link" id="generate-pipeline-button">
+                <span class="icon">
+                  <i class="fas fa-list-ul"></i>
+                </span>
+                <span>Generate Pipeline</span>
+              </button>
+            </div>
+          </div>
+        </div>        
+        <div class="column" style="overflow: auto;" id="generation-column">
+          <label class="label" id="generate-title">
+            Generated Output <span id="generated-timestamp"></span>
+          </label>
+          <div id="generated-pipeline">
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
