@@ -172,6 +172,7 @@ $(document).ready(function(){
             $("#custom-image").addClass('compulsory-info');
         } else {
             $("#custom-image").removeClass('compulsory-info');
+            $("#custom-image").css("border", "");
         }
         $(".compulsory-info").each(function(){
         if (this.value == "" || this.value == "Select image") {
