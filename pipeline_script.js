@@ -268,7 +268,7 @@ $(document).ready(function(){
         <span class="icon">
             <i class="far fa-clipboard"></i>
         </span>
-        <span>Copy to clipboard</span>
+        <span id="copy-text-button-text">Copy to clipboard</span>
       </a>`);        
         $("#generated-pipeline").empty()
         .append(
@@ -339,7 +339,10 @@ if __name__ == '__main__':
 </code>
 </pre>
     `);
-    $('#copy-text-button').click(function () { copyFunction(); });
+    $('#copy-text-button').click(function () { 
+        copyFunction(); 
+        $('#copy-text-button-text').text("Copied!");
+    });
     }
     hljs.initHighlighting.called = false;
     hljs.initHighlighting();
