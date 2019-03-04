@@ -23,15 +23,75 @@ $(document).ready(function(){
         <div class="field">
             <label class="label">Image to use</label>
             <div class="control">
-            <div class="select">
-                <select class="compulsory-info" id="component-image"
-                ><option>Select image</option
-                ><option>Darknet(No OpenCV)</option
-                ><option>Darknet(OpenCV)</option></select
-                >
-            </div>
+                <div class="select">
+                    <select class="compulsory-info" id="component-image">
+                        <option>Select image</option>
+                        <option>Darknet(No OpenCV)</option>
+                        <option>Darknet(OpenCV)</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
             </div>
         </div> 
+        <div class="field">
+            <label class="label">If 'Custom' image is selected:</label>
+            <div class="control">
+            <input id="custom-image" class="input" type="text" placeholder="Text input"/>
+            </div>
+        </div>  
+        <label class="label">Input of component</label>   
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <label class="label">From (Component name)</label>
+            </div>
+            <div class="field">
+                <label class="label">Label</label>
+            </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-from0" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-label0" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-from1" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-label1" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-body">
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-from2" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            <div class="field">
+                <p class="control is-expanded">
+                <input id="component-input-label2" class="input" type="text" placeholder="Text input">
+                </p>
+            </div>
+            </div>
+        </div>
         <div class="field">
             <label class="label">Command to run in container</label>
             <div class="control">
@@ -90,8 +150,8 @@ $(document).ready(function(){
                 </p>
             </div>
             </div>
-        </div>            
-        </div>
+        </div>                    
+        </div>      
     `);
         $('#delete-button' + component_num).click(function(){
         curr_component_num--;
@@ -108,8 +168,13 @@ $(document).ready(function(){
             $(".modal").addClass('is-active');
             inputs_filled = false;
         }
+        if ($("#component-image").val() == "Custom") {
+            $("#custom-image").addClass('compulsory-info');
+        } else {
+            $("#custom-image").removeClass('compulsory-info');
+        }
         $(".compulsory-info").each(function(){
-        if (this.value == "" || this.value == "Select image") {              
+        if (this.value == "" || this.value == "Select image") {
             inputs_filled = false;
             this.style = ("border: red 1px solid");
         } else {
@@ -125,23 +190,41 @@ $(document).ready(function(){
         for (var i = 0; i < arrayLength; i++) {
         var component_name = $("#"+component_list[i]).find("#component-name").val();
         var component_image = $("#"+component_list[i]).find("#component-image").val();
+        if (component_image == "Custom") 
+            component_image = $("#"+component_list[i]).find("#custom-image").val();
         var component_command = $("#"+component_list[i]).find("#component-command").val();
         var component_output = "";
+        var component_output_files = "";
+        var component_input_files = "";
         var output_count = 0;
+        var input_count = 0;
         for (var j=0; j <= 2; j++) {
             if ($("#"+component_list[i]).find("#component-output-label"+j.toString()).val() != "") {
-            output_count++;
+                output_count++;
+            }
+            if ($("#"+component_list[i]).find("#component-input-from"+j.toString()).val() != "") {
+                input_count++;
             }
         }
 
+        for (var j=0; j<= 2; j++) {
+            if (input_count == 0) break;
+            else if (input_count == 1) {
+                component_input_files += `"%s" % ` + $("#"+component_list[i]).find("#component-input-from"+j.toString()).val() + `.outputs["` + $("#"+component_list[i]).find("#component-input-label"+j.toString()).val() + `"]`; break;
+            } else {
+                component_input_files += `"%s" % ` + $("#"+component_list[i]).find("#component-input-from"+j.toString()).val() + `.outputs["` + $("#"+component_list[i]).find("#component-input-label"+j.toString()).val() + `"], `;
+                input_count--;
+            }
+        }
         for (var j=0; j <= 2; j++) {
             if (output_count == 0) break;
-            else if (output_count ==1 ) {
-            component_output += `'` + $("#"+component_list[i]).find("#component-output-label"+j.toString()).val() + `': '` + 
-                                $("#"+component_list[i]).find("#component-output-file"+j.toString()).val() + `'`; break;
+            else if (output_count == 1) {                
+                component_output_files += `'` + $("#"+component_list[i]).find("#component-output-file"+j.toString()).val() + `'`;
+                component_output += `'` + $("#"+component_list[i]).find("#component-output-label"+j.toString()).val() + `': '/output` + (j+1).toString() + `.txt'`; break;
             } else {
-            component_output += `'` + $("#"+component_list[i]).find("#component-output-label"+j.toString()).val() + `': '` + 
-                                $("#"+component_list[i]).find("#component-output-file"+j.toString()).val() + `',`; output_count--;
+                component_output_files += `'` + $("#"+component_list[i]).find("#component-output-file"+j.toString()).val() + `',`;
+                component_output += `'` + $("#"+component_list[i]).find("#component-output-label"+j.toString()).val() + `': '/output` + (j+1).toString() + `.txt', `; 
+                output_count--;
             }
         }
 
@@ -156,8 +239,9 @@ $(document).ready(function(){
         step_image='` + component_image + `',
         step_command='` + component_command + `',
         step_outputs={` + component_output + `},
-        output_to_local='',
-        component_directory_location=storage_maker.outputs['` + component_name + `']
+        output_to_local=[` + component_output_files + `],
+        component_directory_location="%s" % storage_maker.outputs['` + component_name + `'],
+        step_inputs=[` + component_input_files + `]
     )
 `;            
         component_name_arr.push(component_name);
@@ -207,9 +291,16 @@ def storage_maker_op(folder_name='',step_name='make-storage'):
     container.add_volume_mount(k8s_client.V1VolumeMount(mount_path='/mnt', name=pv_name))
     return container
 
-def new_container(step_name, step_image, step_command=None, step_arguments=None, step_outputs=None, output_to_local='', component_directory_location=''):
-    if (output_to_local!=''):
-        step_command = step_command + ' && cp ' + output_to_local + ' /mnt'
+def new_container(step_name, step_image, step_command=None, step_arguments=None, step_outputs=None, output_to_local=[], component_directory_location='', step_inputs=[]):
+    cp_input_command = 'echo "Starting component: ' + step_name + '..."'
+    if (len(step_inputs)!=0):
+        for input in step_inputs:  
+            cp_input_command += ' && cp ' + input + ' .'
+    step_command = cp_input_command + ' && ' + step_command
+    if (len(output_to_local)!=0):
+        for index, output in enumerate(output_to_local):            
+            step_command = step_command + ' && find -iname "' + output + '" -exec cp {} ' + component_directory_location +  ' \\;'
+            step_command = step_command + ' && echo "' + component_directory_location + '/' + output + '" >> /output' + str(index+1) + '.txt'
     container = dsl.ContainerOp(
 		name=step_name,
 		image=step_image,
