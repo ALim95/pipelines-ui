@@ -281,7 +281,7 @@ pvc_name='` + $("#pipeline-pvc").val() + `'
 def storage_maker_op(folder_name='',step_name='make-storage'):
     container = dsl.ContainerOp(
         name=step_name,
-        image='amd64/ubuntu:16.04',
+        image='alpine:latest',
         command = ['sh', '-c', ('mkdir /mnt/' + folder_name + ' && ` +  pipeline_directory_maker + ` && ` +  pipeline_output_maker + `')],
         file_outputs={` +  pipeline_directory_location + `}
     )
