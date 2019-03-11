@@ -6,4 +6,4 @@ Features: <br />
 - Automatic folder generation
 - Able to specify commands in container
 - Outputs saved to persistent volume storage
-- Getting inputes from other components and using it
+- Getting inputs from other components and using it
