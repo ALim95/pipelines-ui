@@ -1,4 +1,4 @@
-const DARKNET = "alim95/darknet-test:v3";
+const DARKNET = "alim95/darknet-test:v4";
 const DARKNET_OPENCV = "alim95/darknet-test:opencv-v1";
 var curr_component_num = 0;
 var component_num = 0;
